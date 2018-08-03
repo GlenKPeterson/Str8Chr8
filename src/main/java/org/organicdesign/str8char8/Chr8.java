@@ -65,8 +65,16 @@ public class Chr8 {
     //     3    16  U+0800   U+FFFF 1110xxxx 10xxxxxx 10xxxxxx
     //     4    21 U+10000 U+10FFFF 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 
-    public static int numBytes(byte[] bs, int off) {
-        byte firstByte = bs[off];
+    /**
+     * Returns the number of bytes in the UTF-8 character at the given offset, or throws an exception if the data at
+     * that offset does not represent a valid UTF-8 character.
+     * @param bytes the byte array to parse
+     * @param off the offset in the array to look for the character.
+     * @return the number of bytes used to represent a valid UTF-8 character
+     * @throws IllegalArgumentException if there is no valid character at that offset.
+     */
+    public static int numBytes(byte[] bytes, int off) {
+        byte firstByte = bytes[off];
         if ( (firstByte & HIGH_BIT) == 0 ) {
             return 1;
         } else if ( (firstByte & HIGH_3_BITS) == HIGH_2_BITS ) {
@@ -79,30 +87,38 @@ public class Chr8 {
         throw new IllegalArgumentException("Not a valid utf8 character at offset " + off);
     }
 
-    public static int toInt(byte[] bs, int off) {
-        byte firstByte = bs[off];
+    /**
+     * Returns the 32-bit unicode character for the utf-8 representation at the given offset, or throws an exception
+     * if the data at that offset does not represent a valid UTF-8 character.
+     * @param bytes the byte array to parse
+     * @param off the offset in the array to look for the character.
+     * @return the 32-bit unicode character represented by the utf-8.
+     * @throws IllegalArgumentException if there is no valid character at that offset.
+     */
+    public static int toInt(byte[] bytes, int off) {
+        byte firstByte = bytes[off];
         if ( (firstByte & HIGH_BIT) == 0 ) {
             return (int) firstByte;
         } else if ( (firstByte & HIGH_3_BITS) == HIGH_2_BITS ) {
             int ret = firstByte & LOW_5_BITS;
             ret = ret << 6;
-            ret &= bs[off + 1] & LOW_6_BITS;
+            ret &= bytes[off + 1] & LOW_6_BITS;
             return ret;
         } else if ( (firstByte & HIGH_4_BITS) == HIGH_3_BITS ) {
             int ret = firstByte & LOW_4_BITS;
             ret = ret << 6;
-            ret &= bs[off + 1] & LOW_6_BITS;
+            ret &= bytes[off + 1] & LOW_6_BITS;
             ret = ret << 6;
-            ret &= bs[off + 2] & LOW_6_BITS;
+            ret &= bytes[off + 2] & LOW_6_BITS;
             return ret;
         } else if ( (firstByte & HIGH_5_BITS) == HIGH_4_BITS ) {
             int ret = firstByte & LOW_3_BITS;
             ret = ret << 6;
-            ret &= bs[off + 1] & LOW_6_BITS;
+            ret &= bytes[off + 1] & LOW_6_BITS;
             ret = ret << 6;
-            ret &= bs[off + 2] & LOW_6_BITS;
+            ret &= bytes[off + 2] & LOW_6_BITS;
             ret = ret << 6;
-            ret &= bs[off + 3] & LOW_6_BITS;
+            ret &= bytes[off + 3] & LOW_6_BITS;
             return ret;
         }
         throw new IllegalArgumentException("Not a valid utf8 character at offset " + off);
