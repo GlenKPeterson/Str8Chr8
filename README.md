@@ -2,10 +2,10 @@
 
 "Strings" and "characters" for Java internally represented as UTF-8.
 
-This project is brand new.
-As of 2018-08-03 I haven't even compiled it yet.
-But the world needs something like this because MySQL 8 supports "high unicode chars" and they are an absolute mess in Java.
+The world needs something like this because MySQL 8 supports "high unicode chars" and they are an absolute mess in Java.
 Parsing them into 16-bit fields was forward-thinking in 1990, but seems crazy today.
+This project is brand new.
+As of 2018-08-03 I have compiled it, but haven't tested anything yet.
 
 ## To Do:
 (Not necessarily in order)
